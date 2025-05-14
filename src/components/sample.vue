@@ -1,18 +1,13 @@
 <template>
-  <div class="container" role="main" aria-label="18th Birthday RSVP Invitation" > 
-    <div class="sparkle sparkle1"></div>
-    <div class="sparkle sparkle2"></div>
-    <div class="sparkle sparkle3"></div>
-    <div class="sparkle sparkle4"></div>
-    <div class="sparkle sparkle5"></div>
-
+  <div class="container" role="main" aria-label="18th Birthday RSVP Invitation">
     <h1 class="title">You're Invited</h1>
-    <h2 class="subtitle">Angela's 18th Birthday Celebration</h2>
-    <p class="invitation-text">Join us in celebrating the joy and happiness on ANGELA's special day! We cordially invite you to be a part of a celebration filled with laughter, hugs, and unforgettable moments.</p>
+    <br>
+    <h2 class="subtitle">To Celebrate Angela’s 18th Birthday</h2>
+    <p class="invitation-text">"Join us in celebrating the joy and happiness on ANGELA's special day! We cordially invite you to be a part of a celebration filled with laughter, hugs, and unforgettable moments."</p>
 
     <form @submit.prevent="handleSubmit" aria-label="RSVP Form">
       <label for="name">Your Name:</label>
-      <input type="text" id="name" v-model="name" placeholder="Enter your full name" required autocomplete="off" />
+      <input @input="findPerson()" type="text" id="name" v-model="name" placeholder="Enter your full name" required autocomplete="off" />
 
       <label>Will you attend?</label>
       <div class="radio-group" role="radiogroup" aria-labelledby="attendanceLabel">
@@ -24,10 +19,29 @@
         </label>
       </div>
 
+      <p class="invitation-text">"Bring your enthusiasm and festive spirit! We hope you can make it and celebrate with us."</p>
+
       <button type="submit" aria-label="Submit RSVP">Submit RSVP</button>
     </form>
     <div v-if="thankYouMessage" class="thankyou-message" role="alert" aria-live="polite">
       {{ thankYouMessage }}
+    </div>
+    <!-- <button @click="showDialog" class="open-dialog-button">Show Invitation Details</button> -->
+
+    <div v-if="dialogVisible" class="dialog-overlay" role="dialog" aria-labelledby="dialogTitle" aria-describedby="dialogDescription">
+      <div class="dialog-content">
+        <h2 id="dialogTitle" class="dialog-title">Angela's 18th Birthday Celebration</h2>
+        <p id="dialogDescription" class="dialog-description">
+          <strong>Date:</strong> [Date of the Party]<br>
+          <strong>Time:</strong> [Time of the Party]<br>
+          <strong>Venue:</strong> [Venue of the Party]<br>
+          <strong>Dress Code:</strong> [Dress Code]
+        </p>
+        <p class="dialog-additional-info">
+            There will be food, music, and lots of fun!  We can't wait to see you there!
+        </p>
+        <button @click="closeDialog" class="dialog-close-button" aria-label="Close dialog">Close</button>
+      </div>
     </div>
   </div>
 </template>
@@ -38,13 +52,36 @@ export default {
     return {
       name: '',
       attendance: '',
-      thankYouMessage: ''
+      thankYouMessage: '',
+      attendedD: false,
+      eightCandel: [
+        { name: 'Ms. Angelica Aquino', value: 'Angelica Aquino' },
+        { name: 'Mrs. Marlyn Aquino', value: 'Marlyn Aquino' },
+        { name: 'Ms. Louerie Kay Cincua', value: 'Louerie Kay Cincua' },
+        { name: 'Ms. Luisa Canales', value: 'Luisa Canales' },
+        { name: 'Mrs. Liezel Cincua', value: 'Liezel Cincua' },
+        { name: 'Ms. Jenifer Aytona', value: 'Jenifer Aytona' },
+        { name: 'Mrs. Clarissa Dionaldo', value: 'Clarissa Dionaldo' },
+        { name: 'Ms. Charlmie de Torres', value: 'Charlmie de Torres' },
+        { name: 'Mrs. Joan Magno', value: 'Joan Magno' },
+        { name: 'Mrs. Jessica Aspiras', value: 'Jessica Aspiras' },
+        { name: 'Mrs. Jen-Jen Valdez', value: 'Jen-Jen Valdez' },
+        { name: 'Mrs. Floser Nepomuceno', value: 'Floser Nepomuceno' },
+        { name: 'Ms. Mila Ansagay', value: 'Mila Ansagay' },
+        { name: 'Dra. Weng Catanaoan', value: 'Weng Catanaoan' },
+        { name: 'Mrs. Rowena Datinginoo', value: 'Rowena Datinginoo' },
+        { name: 'Ms. Ma. Zarah Muli', value: 'Ma. Zarah Muli' },
+        { name: 'Mrs. Thelma Muli', value: 'Thelma Muli' },
+        { name: 'Mr. Angelo Muli', value: 'Angelo Muli' },
+      ],
+      dialogVisible: false, // Added for dialog visibility
     };
   },
   methods: {
     handleSubmit() {
       if (!this.name || !this.attendance) {
         alert('Please enter your name and select attendance.');
+        this.attendedD = true;
         return;
       }
 
@@ -52,7 +89,25 @@ export default {
       this.thankYouMessage = `Thank you, ${this.name}! Your RSVP that you will ${this.attendance === 'Yes' ? 'attend' : 'not attend'} has been received.`;
       this.name = '';
       this.attendance = '';
-    }
+    },
+
+    findPerson() {
+      this.attendedD = true;
+      const perso = this.eightCandel.find(r => r.value.toLowerCase() === this.name.toLowerCase());
+      if (perso) {
+        console.log('Person found:', perso.value);
+        this.dialogVisible = true;
+
+      } else {
+        console.log('Person not found');
+      }
+    },
+    showDialog() {
+      this.dialogVisible = true;
+    },
+    closeDialog() {
+      this.dialogVisible = false;
+    },
   }
 };
 </script>
@@ -72,13 +127,11 @@ body {
   color: #660033;
   min-height: 100vh;
   display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
   padding: 2rem;
 }
 
 .container {
-  background: #fff0f6cc;
+  background: #ffd2e4cc;
   max-width: 450px;
   width: 100%;
   border-radius: 20px;
@@ -87,55 +140,17 @@ body {
     0 0 30px 10px rgba(255, 182, 193, 0.3);
   padding: 2.5rem 2rem 3rem 2rem;
   text-align: center;
-  /* position: relative; */
   overflow: hidden;
 
 }
 
-/* Diamond sparkle effect shapes */
-.sparkle {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  background:
-    linear-gradient(45deg, transparent 45%, #fdf8f2 45%, #fdf8f2 55%, transparent 55%),
-    linear-gradient(-45deg, transparent 45%, #fdf8f2 45%, #fdf8f2 55%, transparent 55%);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% 100%;
-  opacity: 0.85;
-  animation: sparkle-flicker 3s infinite ease-in-out;
-}
-
-@keyframes sparkle-flicker {
-  0%, 100% { opacity: 0.85; transform: scale(1) rotate(0deg); }
-  50% { opacity: 0.3; transform: scale(1.3) rotate(20deg);}
-}
-
-/* Position some sparkles around container */
-.sparkle1 { top: 12%; left: 10%; animation-delay: 0s; }
-.sparkle
-.sparkle2 { top: 30%; right: 15%; animation-delay: 1.2s; }
-.sparkle3 { bottom: 25%; left: 25%; animation-delay: 0.7s; }
-.sparkle4 { bottom: 12%; right: 20%; animation-delay: 1.6s; }
-.sparkle5 { top: 50%; left: 50%; animation-delay: 2.3s; }
-
-/* .title {
-  font-family: 'Great Vibes', cursive;
-  
-  font-size: 3.6rem;
-  color: #e60073;
-  margin-bottom: 0;
-  letter-spacing: 2px;
-  text-shadow: 0 0 8px #ff80bf, 0 0 15px #ff3399;
-} */
 .title {
   font-family: 'Great Vibes', cursive;
   font-size: 3.6rem;
   color: #f5889f;
   margin-bottom: 0;
   letter-spacing: 2px;
-  text-shadow: 0 0 8px #eb91a8, 0 0 15px #ff97cb;
+  text-shadow: 0 0 8px #ffffff, 0 0 15px #ffbaef;
 }
 .subtitle {
   font-weight: 600;
@@ -197,7 +212,7 @@ input[type="radio"] {
 
 button {
   background: linear-gradient(45deg, #ff66b3, #e60073);
-  color:white;
+  color: white;
   font-weight: 700;
   font-size: 1.15rem;
   padding: 0.9rem 0;
@@ -234,6 +249,115 @@ button:focus {
   }
 }
 
+/* New styles for the dialog */
+.open-dialog-button {
+  background: linear-gradient(45deg, #a7f3d0, #34d399); /* Tailwind colors, light to dark teal */
+  color: #065f46; /* Darker text for contrast */
+  font-weight: 600; /* Make the text bold */
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem; /* Slightly adjusted padding */
+  border: none;
+  border-radius: 1.5rem; /* More rounded corners */
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Softer shadow */
+  transition: all 0.3s ease; /* Smooth transition for all properties */
+  margin-top: 1.5rem;
+  display: inline-block; /* Ensure proper spacing */
+}
+
+.open-dialog-button:hover {
+  background: linear-gradient(45deg, #34d399, #a7f3d0); /* Reverse gradient on hover */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.open-dialog-button:active {
+  transform: translateY(0); /* No lift when active/pressed */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Smaller shadow when active */
+}
+
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(4px); /* Add blur to the background */
+}
+
+.dialog-content {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+  width: 90%; /* Responsive width */
+  max-width: 500px; /* Maximum width */
+  animation: fadeIn 0.3s ease; /* Simple fade-in animation */
+  transform: translateY(-20px);
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
+
+.dialog-title {
+  font-size: 2rem;
+  font-family: 'Great Vibes', cursive;
+  color: #f5889f;
+  margin-bottom: 1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dialog-description {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  line-height: 1.6; /* Improved line height for readability */
+}
+.dialog-additional-info{
+    font-size: 1rem;
+    color: #660033;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.dialog-close-button {
+  background: linear-gradient(to bottom, #f87171, #dc2626); /* Gradient: light red to dark red */
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 1.5rem; /* Fully rounded corners */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.dialog-close-button:hover {
+  background: linear-gradient(to bottom, #ef4444, #b91c1c); /* Slightly lighter/darker on hover */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.dialog-close-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+
 @media (max-width: 500px) {
   .container {
     max-width: 95vw;
@@ -241,6 +365,15 @@ button:focus {
   }
   .title {
     font-size: 2.8rem;
+  }
+  .dialog-content{
+    padding: 1.5rem;
+  }
+  .dialog-title{
+    font-size: 1.75rem;
+  }
+  .dialog-description{
+    font-size: 1rem;
   }
 }
 </style>
