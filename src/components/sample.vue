@@ -26,11 +26,12 @@
     <div v-if="thankYouMessage" class="thankyou-message" role="alert" aria-live="polite">
       {{ thankYouMessage }}
     </div>
-    <!-- <button @click="showDialog" class="open-dialog-button">Show Invitation Details</button> -->
-
     <div v-if="dialogVisible" class="dialog-overlay" role="dialog" aria-labelledby="dialogTitle" aria-describedby="dialogDescription">
       <div class="dialog-content">
         <h2 id="dialogTitle" class="dialog-title">Angela's 18th Birthday Celebration</h2>
+        <p v-if="isEighteenthCandle" class="dialog-special-guest">
+          You are one of the 18 candles, {{ eighteenthCandleName }}!
+        </p>
         <p id="dialogDescription" class="dialog-description">
           <strong>Date:</strong> [Date of the Party]<br>
           <strong>Time:</strong> [Time of the Party]<br>
@@ -38,7 +39,7 @@
           <strong>Dress Code:</strong> [Dress Code]
         </p>
         <p class="dialog-additional-info">
-            There will be food, music, and lots of fun!  We can't wait to see you there!
+          There will be food, music, and lots of fun! We can't wait to see you there!
         </p>
         <button @click="closeDialog" class="dialog-close-button" aria-label="Close dialog">Close</button>
       </div>
@@ -70,11 +71,13 @@ export default {
         { name: 'Ms. Mila Ansagay', value: 'Mila Ansagay' },
         { name: 'Dra. Weng Catanaoan', value: 'Weng Catanaoan' },
         { name: 'Mrs. Rowena Datinginoo', value: 'Rowena Datinginoo' },
-        { name: 'Ms. Ma. Zarah Muli', value: 'Ma. Zarah Muli' },
+        { name: 'Ms. Ma. Zarah Muli', value: 'Zarah Muli' },
         { name: 'Mrs. Thelma Muli', value: 'Thelma Muli' },
         { name: 'Mr. Angelo Muli', value: 'Angelo Muli' },
       ],
-      dialogVisible: false, // Added for dialog visibility
+      dialogVisible: false, 
+      isEighteenthCandle: false,
+      eighteenthCandleName: '',
     };
   },
   methods: {
@@ -89,17 +92,23 @@ export default {
       this.thankYouMessage = `Thank you, ${this.name}! Your RSVP that you will ${this.attendance === 'Yes' ? 'attend' : 'not attend'} has been received.`;
       this.name = '';
       this.attendance = '';
+      this.isEighteenthCandle = false; 
+      this.eighteenthCandleName = '';
+      this.dialogVisible = false;
     },
 
     findPerson() {
       this.attendedD = true;
-      const perso = this.eightCandel.find(r => r.value.toLowerCase() === this.name.toLowerCase());
-      if (perso) {
-        console.log('Person found:', perso.value);
+      const person = this.eightCandel.find(r => r.value.toLowerCase() === this.name.toLowerCase());
+      if (person) {
+        console.log('Person found:', person.name);
+        this.isEighteenthCandle = true;
+        this.eighteenthCandleName = person.name;
         this.dialogVisible = true;
-
       } else {
         console.log('Person not found');
+        this.isEighteenthCandle = false;
+        this.eighteenthCandleName = '';
       }
     },
     showDialog() {
@@ -107,6 +116,8 @@ export default {
     },
     closeDialog() {
       this.dialogVisible = false;
+      this.isEighteenthCandle = false; 
+      this.eighteenthCandleName = '';
     },
   }
 };
@@ -326,10 +337,17 @@ button:focus {
   line-height: 1.6; /* Improved line height for readability */
 }
 .dialog-additional-info{
-    font-size: 1rem;
-    color: #660033;
-    margin-bottom: 1.5rem;
-    font-style: italic;
+  font-size: 1rem;
+  color: #660033;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.dialog-special-guest {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #e60073;
+  margin-bottom: 1rem;
 }
 
 .dialog-close-button {
