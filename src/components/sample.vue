@@ -3,23 +3,23 @@
     <h1 class="title">You're Invited</h1>
     <br>
     <h2 class="subtitle">To Celebrate Angela’s 18th Birthday</h2>
-    <p class="invitation-text">"Join us in celebrating the joy and happiness on ANGELA's special day! We cordially invite you to be a part of a celebration filled with laughter, hugs, and unforgettable moments."</p>
+    <p class="invitation-text">Join us in celebrating the joy and happiness on ANGELA's special day! We cordially invite you to be a part of a celebration filled with laughter, hugs, and unforgettable moments.</p>
 
     <form @submit.prevent="handleSubmit" aria-label="RSVP Form">
       <label for="name">Your Name:</label>
-      <input @input="findPerson()" type="text" id="name" v-model="name" placeholder="Enter your full name" required autocomplete="off" />
+      <input  type="text" id="name" v-model="name" placeholder="Enter your full name" required autocomplete="off" />
 
       <label>Will you attend?</label>
       <div class="radio-group" role="radiogroup" aria-labelledby="attendanceLabel">
         <label>
-          <input type="radio" v-model="attendance" value="Yes" required /> Yes
+          <input @click="yesRadio()" type="radio" v-model="attendance" value="Yes" required /> Yes
         </label>
         <label>
           <input type="radio" v-model="attendance" value="No" /> No
         </label>
       </div>
 
-      <p class="invitation-text">"Bring your enthusiasm and festive spirit! We hope you can make it and celebrate with us."</p>
+      <p class="invitation-text">Bring your enthusiasm and festive spirit! We hope you can make it and celebrate with us.</p>
 
       <button type="submit" aria-label="Submit RSVP">Submit RSVP</button>
     </form>
@@ -104,7 +104,7 @@ export default {
         console.log('Person found:', person.name);
         this.isEighteenthCandle = true;
         this.eighteenthCandleName = person.name;
-        this.dialogVisible = true;
+        // this.dialogVisible = true;
       } else {
         console.log('Person not found');
         this.isEighteenthCandle = false;
@@ -116,9 +116,32 @@ export default {
     },
     closeDialog() {
       this.dialogVisible = false;
-      this.isEighteenthCandle = false; 
-      this.eighteenthCandleName = '';
+      // this.isEighteenthCandle = false; 
+      // this.eighteenthCandleName = '';
     },
+    yesRadio() {
+      if (this.name.trim() === '') {
+        alert('Please enter your name before selecting Yes.');
+        return;
+      }
+
+      // Check if name exists in the 18 candles list using LIKE-style (partial match)
+      const inputName = this.name.toLowerCase();
+      const match = this.eightCandel.find(person =>
+        person.value.toLowerCase().includes(inputName)
+      );
+
+      if (match) {
+        this.isEighteenthCandle = true;
+        this.eighteenthCandleName = match.name;
+      } else {
+        this.isEighteenthCandle = false;
+        this.eighteenthCandleName = '';
+      }
+
+      this.dialogVisible = true; // Show dialog in either case
+    }
+
   }
 };
 </script>
@@ -133,7 +156,7 @@ export default {
 
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  /* font-family: 'Poppins', sans-serif; */
   background: linear-gradient(135deg, #ffe6f0 0%, #ffcce3 100%);
   color: #660033;
   min-height: 100vh;
@@ -157,25 +180,30 @@ body {
 
 .title {
   font-family: 'Great Vibes', cursive;
+  /* font-family: 'Halimun', cursive; */
   font-size: 3.6rem;
-  color: #f5889f;
+  color: #e60073;
   margin-bottom: 0;
   letter-spacing: 2px;
   text-shadow: 0 0 8px #ffffff, 0 0 15px #ffbaef;
+  font-style: italic; 
 }
 .subtitle {
   font-weight: 600;
   font-size: 1.25rem;
   margin-top: 6px;
   margin-bottom: 1.8rem;
-  color: #cc0066;
+  color: #000000;
 }
 
 .invitation-text {
+  /* Quiche  */
+  /* font-family: 'Quiche', cursive; */
+  font-family: 'Quiche', sans-serif; 
   font-size: 1.1rem;
   margin-bottom: 1.8rem;
-  font-style: italic;
-  color: #99004d;
+  /* font-style: italic; */
+  color: #000000;
 }
 
 form {
